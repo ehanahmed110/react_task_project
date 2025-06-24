@@ -1,1 +1,9 @@
 @import "tailwindcss";
+  theme:{
+    extend:{
+      colors:{
+        primary:"#fab768",
+        secondry:"#f14f3e"
+      }
+    }
+  }
