@@ -1,52 +1,15 @@
-import React from 'react'; 
-import { Menubar } from 'primereact/menubar';
-//import { useRouter } from 'next/router';
+import React from 'react'
+import { JournalEntries } from '../Components/JournalEntries/JournalEntries'
+
 export function JournalEntriesPage() {
-    // const router = useRouter();
-    const items = [
-        {
-            label: 'Router',
-            icon: 'pi pi-palette',
-            items: [
-                {
-                    label: 'Styled',
-                    url: '/theming'
-                },
-                {
-                    label: 'Unstyled',
-                    url: '/unstyled'
-                }
-            ]
-        },
-        {
-            label: 'Programmatic',
-            icon: 'pi pi-link',
-            // command: () => {
-            //     router.push('/installation');
-            // }
-        },
-        {
-            label: 'External',
-            icon: 'pi pi-home',
-            items: [
-                {
-                    label: 'React.js',
-                    url: 'https://react.dev/'
-                },
-                {
-                    label: 'Vite.js',
-                    url: 'https://vitejs.dev/'
-                }
-            ]
-        }
-    ];
+    
 
     return (
-        <>
-            <h1>Journel Entries page</h1>
-               <div className="card">
-            <Menubar model={items} />
-        </div>
-        </>
+        <React.Fragment>
+            <div className='px-4 py-2'>
+                <JournalEntries/>
+            </div>
+        </React.Fragment>
     )
 }
+

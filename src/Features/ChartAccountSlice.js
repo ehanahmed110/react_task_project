@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../utils/Axios";
-const FetchData = createAsyncThunk('chart/account',async(payload,thunkAPI)=>{
+export const FetchData = createAsyncThunk('chart/account',async(payload,thunkAPI)=>{
     try{
-    const response = await axiosInstance.post('/listAccounts')
-    return response.data
+    const response = await axiosInstance.post('/listAccounts',payload)
+    return {type:payload.account_type, data:response.data}
     }catch(error){
-      return thunkAPI.rejectWithValue("error ehile fetching data",error)
+      return thunkAPI.rejectWithValue("error while fetching data",error)
     }
 })
 const initialState = {
      loading:false,
-     data:null,
+     data:{},
      error:null
 }
 const ChartAccountSlice = createSlice({
@@ -20,16 +20,16 @@ const ChartAccountSlice = createSlice({
   extraReducers:(builder)=>{
    builder
    .addCase(FetchData.pending,(state)=>{
-    state.loading = true
+    state.loading = true;
    })
    .addCase(FetchData.fulfilled,(state,action)=>{
-    state.loading = false,
-    state.data = action.payload,
-    state.error = null
+    state.loading = false;
+    state.data[action.payload.type] = action.payload.data;
+    state.error = null;
    })
    .addCase(FetchData.rejected,(state,action)=>{
-    state.loading = false,
-    state.error  = action.payload
+    state.loading = false;
+    state.error  = action.payload;
    })
   }
 })
