@@ -14,8 +14,8 @@ export function ShareDialog({
 }) {
     const dialogFooter =(
         <div className="flex justify-end gap-2">
-            <ShareButton label='cancel' icon='pi pi-times' onClick={onHide}/>
-            <ShareButton label='save' icon='pi pi-check' onClick={onSave} autoFocus/>
+            <ShareButton label='Cancel' icon='pi pi-times' onClick={onHide}/>
+            <ShareButton label='Save' icon='pi pi-check' onClick={onSave} />
         </div>
     )
   return (
@@ -24,11 +24,17 @@ export function ShareDialog({
         <Dialog
           visible={visible}
           header={title}
-          style={width}
+          style={{width}}
           onHide={onHide}
-          model
+          modal
           className="custom-dialog rounded-xl"
-          footer={showFooter ? (customFooter || defaultFooter) : null}
+          footer={showFooter ? (customFooter || dialogFooter) : null}
+          pt={{
+            header:{className:"!bg-black !text-white !px-2 !py-1"},
+            headerTitle:{className:"!text-[14px]"},
+            closeButtonIcon:{className:"!text-white"},
+            closeButton:{className:"!border !border-black hover:!bg-transparent"}
+          }}
         >
           {children}
         </Dialog>

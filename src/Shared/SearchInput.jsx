@@ -1,7 +1,7 @@
 import { InputText } from 'primereact/inputtext'
 import React from 'react'
 
-export function SearchInput({value,onchange,placeholder}) {
+export function SearchInput({value,onChange,placeholder}) {
     
 
     return (
@@ -9,7 +9,7 @@ export function SearchInput({value,onchange,placeholder}) {
             <div>
                 <InputText 
                 value={value}
-                onChange={onchange}
+                onChange={onChange}
                 placeholder={placeholder}
                // className='w-full'
                 pt={{

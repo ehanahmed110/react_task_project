@@ -55,7 +55,6 @@ export function CoustomTable({
             className={`${className} p-datatable-sm !text-[13px]`}
             tableStyle={{ minWidth: '100%' }}
             rowHover
-            stripedRows
             onSelectAllChange={onSelectionChange}
             {...props}
             >

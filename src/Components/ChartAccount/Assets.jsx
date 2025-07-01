@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { FetchData } from '../../Features/ChartAccountSlice';
-import { CoustomTable } from '../../Shared/CoustomTable';
-import { ShareButton } from '../../Shared/ShareButton';
 import { Actionutton } from '../../Shared/Actionutton';
+import { CustomTreeTable } from '../../Shared/CustomTreeTable';
 
 export function Assets() {
   const dispatch = useDispatch();
@@ -15,7 +14,14 @@ export function Assets() {
 
   const assetData = data?.["Asset"];
   const datatype = Array.isArray(assetData?.data) ? assetData.data : [];
-  console.log(datatype)
+ const CleanTreeData = (nodes)=>{
+    return nodes.map(node =>({
+      ...node,
+      children : Array.isArray(node.children)? CleanTreeData(node.children) : [  ]
+    }))
+ }
+ const cleanedData = CleanTreeData(datatype)
+
   const actionTemplate = (rowData) => (
     <div className="flex space-x-3 ">
       <Actionutton icon='pi pi-eye'/>
@@ -32,7 +38,7 @@ export function Assets() {
 
   return (
     <React.Fragment>
-      <CoustomTable data={datatype} columns={columns} loading={loading} />
+      <CustomTreeTable data={cleanedData} columns={columns} loading={loading}  rows={6} />
     </React.Fragment>
   );
 }

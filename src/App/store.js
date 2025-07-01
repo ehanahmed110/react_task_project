@@ -8,7 +8,13 @@ import deductionReducer from "../Features/Payroll/DeductionSlice"
 import allowanceReducer from "../Features/Payroll/Allowence"
 import payslipReducer from "../Features/Payroll/PayslipsSlice"
 import payrunsReducer from "../Features/Payroll/PayrunsSlice"
-//import DashboardRedeucer from "../Features/DashboardSlice"
+import balanceReducer from "../Features/Reports/BalanceSheet"
+import cashFlowReducer from "../Features/Reports/CashFlow"
+import incomeReducer from "../Features/Reports/IncomeStatement"
+import trialBalancereducer from "../Features/Reports/TrailBalance"
+import accountStatementReducer from "../Features/Reports/AccountStatement"
+import vatReportReducer from "../Features/Reports/VatReport"
+import DashboardRedeucer from "../Features/DashboardSlice"
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -17,7 +23,7 @@ import { injectStore } from "../utils/Axios";
 
 const rootReducer =combineReducers({
     auth:authReducer,
-   // dashboard:DashboardRedeucer,
+    dashboard:DashboardRedeucer,
    data:dataReducer,
    journal: journalReducer,
    employee:employeeReducer,
@@ -26,7 +32,13 @@ const rootReducer =combineReducers({
    deduction:deductionReducer,
    allowance:allowanceReducer,
    payslip:payslipReducer,
-   payruns:payrunsReducer
+   payruns:payrunsReducer,
+   balance:balanceReducer,
+   cashFlow:cashFlowReducer,
+   income : incomeReducer,
+   trialBalance:trialBalancereducer,
+   accountStatement:accountStatementReducer,
+   vatReport:vatReportReducer
 })
 const persistConfig ={
     key :'root',

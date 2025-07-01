@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import { Report } from "../Components/Report/Report";
 
 export function ReportsPage() {
-    
-
-    return (
-        <>
-            <h1>report page</h1>
-        </>
-    )
+  return (
+    <React.Fragment>
+      <div className="px-4 py-2">
+        <Report />
+      </div>
+    </React.Fragment>
+  );
 }

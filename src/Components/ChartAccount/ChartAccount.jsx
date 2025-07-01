@@ -1,23 +1,21 @@
 import { InputText } from "primereact/inputtext";
-import React from "react";
+import React, { useState } from "react";
 import { ShareButton } from "../../Shared/ShareButton";
 import { SearchInput } from "../../Shared/SearchInput";
-import { Assets } from "./Assets";
-import { Liability } from "./Liability";
-import { Revenue } from "./Revenue";
-import { Equity } from "./Equity";
-import { Expense } from "./Expense";
 import { useSelector } from "react-redux";
 import { ShareTabs } from "../../Shared/ShareTabs";
+import { ShareDialog } from "../../Shared/ShareDialog";
+import { CharttabComponent } from "./CharttabComponent";
 
 export function ChartAccount() {
   const data = useSelector((state)=>state.data) 
+  const [visible,setVisible] = useState(false);
   const tabs = [
-     { label: "Asset", content: <Assets /> },
-    { label: "Liability", content: <Liability /> },
-    { label: "Revenue", content: <Revenue /> },
-    { label: "Equity", content: <Equity /> },
-    { label: "Expense", content: <Expense /> },
+     { label: "Asset", content:<CharttabComponent account_type="Asset" />  },
+    { label: "Liability", content:<CharttabComponent account_type="Liability" />  },
+    { label: "Revenue", content:<CharttabComponent account_type="Revenue" />  },
+    { label: "Equity", content:<CharttabComponent account_type="Equity" />  },
+    { label: "Expense", content:<CharttabComponent account_type="Expense" />  },
   ]
   return (
     <React.Fragment>
@@ -29,7 +27,7 @@ export function ChartAccount() {
         </div>
         <div className="flex gap-x-3">
           <SearchInput placeholder='search by code or name'/>
-          <ShareButton label=" Create Account " icon="pi pi-plus" />
+          <ShareButton label=" Create Account " icon="pi pi-plus" onClick={()=>setVisible(true)}/>
         </div>
       </div>
       {/* --------------------- */}
@@ -37,6 +35,16 @@ export function ChartAccount() {
         <div>
           <ShareTabs tabs={tabs}/>
         </div>
+      </div>
+      <div>
+        <ShareDialog 
+        visible={visible}
+        onHide={()=>setVisible(false)}
+        title="Create Account"
+        width="60vw"
+        >
+         
+        </ShareDialog>
       </div>
     </React.Fragment>
   );

@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchData } from "../../Features/ChartAccountSlice";
-import { CoustomTable } from "../../Shared/CoustomTable";
-import { ShareButton } from "../../Shared/ShareButton";
 import { Actionutton } from "../../Shared/Actionutton";
+import { CustomTreeTable } from "../../Shared/CustomTreeTable";
 
 export function Revenue() {
   const dispatch = useDispatch();
@@ -23,16 +22,16 @@ export function Revenue() {
     </div>
   );
   const columns = [
-    { field: "data.name_code_en", header: "Name" },
-    { field: "data.type_en", header: "Type" },
-    { field: "data.sub_type_en", header: "SubType" },
+    { field: "name_code_en", header: "Name" },
+    { field: "type_en", header: "Type" },
+    { field: "sub_type_en", header: "SubType" },
     { header: "Action",body:actionTemplate },
   ];
 
   return (
     <React.Fragment>
       <div>
-        <CoustomTable data={datatype} columns={columns} loading={loading} />
+        <CustomTreeTable data={datatype} columns={columns} loading={loading} rows={6}/>
       </div>
     </React.Fragment>
   );

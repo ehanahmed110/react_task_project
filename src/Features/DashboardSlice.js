@@ -3,7 +3,7 @@ import { DashboardData } from "./DashboardThunk";
 
 const initialState = {
     stats :{
-        totalSales: 0,
+    totalSales: 0,
     totalPurchase: 0,
     bankTransfer: 0,
     cashInflow: 0,
@@ -31,4 +31,4 @@ const DashboardSlice = createSlice({
         })
      }
 });
-export default DashboardData.reducers;
+export default DashboardSlice.reducer;

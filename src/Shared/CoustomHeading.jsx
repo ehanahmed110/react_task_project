@@ -2,7 +2,7 @@ import React from "react";
 
 export function CoustomHeading({ title, icon: Icon,count,subtitle, className = "" }) {
   return (
-    <>
+    <React.Fragment>
       <div className={`flex items-center gap-2 mb-4 ${className}`}>
         {Icon && <Icon className="text-primary text-lg" />}
         <h1 className="text-xl font-medium capitalize">{title}
@@ -11,6 +11,6 @@ export function CoustomHeading({ title, icon: Icon,count,subtitle, className = "
           )}
         </h1>
       </div>
-    </>
+    </React.Fragment>
   );
 }
