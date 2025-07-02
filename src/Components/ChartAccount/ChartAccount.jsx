@@ -8,15 +8,17 @@ import { ShareDialog } from "../../Shared/ShareDialog";
 import { CharttabComponent } from "./CharttabComponent";
 
 export function ChartAccount() {
+  const [searchTerm,setSearchTerm] = useState('')
   const data = useSelector((state)=>state.data) 
   const [visible,setVisible] = useState(false);
   const tabs = [
-     { label: "Asset", content:<CharttabComponent account_type="Asset" />  },
-    { label: "Liability", content:<CharttabComponent account_type="Liability" />  },
-    { label: "Revenue", content:<CharttabComponent account_type="Revenue" />  },
-    { label: "Equity", content:<CharttabComponent account_type="Equity" />  },
-    { label: "Expense", content:<CharttabComponent account_type="Expense" />  },
+     { label: "Asset", content:<CharttabComponent account_type="Asset"  searchTerm={searchTerm}/>  },
+    { label: "Liability", content:<CharttabComponent account_type="Liability" searchTerm={searchTerm}/>  },
+    { label: "Revenue", content:<CharttabComponent account_type="Revenue" searchTerm={searchTerm}/>  },
+    { label: "Equity", content:<CharttabComponent account_type="Equity" searchTerm={searchTerm}/>  },
+    { label: "Expense", content:<CharttabComponent account_type="Expense" searchTerm={searchTerm}/>  },
   ]
+
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -26,7 +28,10 @@ export function ChartAccount() {
           </h1>
         </div>
         <div className="flex gap-x-3">
-          <SearchInput placeholder='search by code or name'/>
+          <SearchInput placeholder='search by code or name'
+          value={searchTerm}
+          onChange={(e)=>setSearchTerm(e.target.value)}
+          />
           <ShareButton label=" Create Account " icon="pi pi-plus" onClick={()=>setVisible(true)}/>
         </div>
       </div>

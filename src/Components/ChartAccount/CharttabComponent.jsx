@@ -6,8 +6,9 @@ import { CustomTreeTable } from "../../Shared/CustomTreeTable";
 import { ShareDialog } from "../../Shared/ShareDialog";
 import { CoustomTable } from "../../Shared/CoustomTable";
 import { ShareButton } from "../../Shared/ShareButton";
+import { showError } from "../../Shared/toast";
 
-export function CharttabComponent({ account_type }) {
+export function CharttabComponent({ account_type,searchTerm }) {
   const [visible, setVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogMode, setDialogMode] = useState("");
@@ -35,6 +36,14 @@ export function CharttabComponent({ account_type }) {
     });
   }
   const cleanedData = cleanTreeChildren(dataType);
+
+  //---------for search-----------
+
+  const filterData = cleanedData.filter((item)=>{
+    const name = item.data?.name_code_en?.toLowerCase() || "";
+    const type = item.data?.type_en.toLowerCase() || "";
+    return name.includes(searchTerm.toLowerCase()) || type.includes(searchTerm.toLowerCase())
+  })
   const actionTemplate = (rowData) => (
     <div className="flex space-x-3">
       <Actionutton
@@ -80,11 +89,6 @@ export function CharttabComponent({ account_type }) {
   ];
   //---------------for delete account--------------
    const handleDelete = () =>{
-
-   }
-
-  // ---for upate acoount-----------------
-  const handleUpdate = () =>{
     dispatch(DeleteAccountData(selectedRow?.id))
       .unwrap()
           .then((res) => {
@@ -95,12 +99,17 @@ export function CharttabComponent({ account_type }) {
           .catch((err) => {
             showError("Delete failed");
           });
+   }
+
+  // ---for upate acoount-----------------
+  const handleUpdate = () =>{
+
   }
   return (
     <React.Fragment>
       <div>
         <CustomTreeTable
-          data={cleanedData}
+          data={filterData}
           columns={columns}
           loading={loading}
           rows={6}

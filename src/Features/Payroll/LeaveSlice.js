@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/Axios";
 
-
+export const LeaveData = createAsyncThunk('leave/approval',async(payload,thunkAPI)=>{
+  try{
+    const response = await axiosInstance.post('/leaves',payload)
+    return response.data
+  }catch(error){
+    return thunkAPI.rejectWithValue(error.response?.data?.error || "unknown error")
+  }
+})
 export const FetchLeaveData = createAsyncThunk('Leave/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/leaves/list',payload)
@@ -13,7 +20,8 @@ export const FetchLeaveData = createAsyncThunk('Leave/data',async(payload,thunkA
 const initialState = {
   leave:{},
   loading:false,
-  error:null
+  error:null,
+  message:""
 }
 const LeaveSlice = createSlice({
  name:"deduction",
@@ -26,9 +34,21 @@ const LeaveSlice = createSlice({
   })
   .addCase(FetchLeaveData.fulfilled,(state,action)=>{
     state.loading = false,
-    state.leave = action.payload
+    state.leave = action.payload,
+    state.message = action.payload.message
   })
   .addCase(FetchLeaveData.rejected,(state,action)=>{
+    state.error = action.payload.error
+  })
+    .addCase(LeaveData.pending,(state)=>{
+    state.loading=true
+  })
+  .addCase(LeaveData.fulfilled,(state,action)=>{
+    state.loading = false,
+    state.leave = action.payload,
+    state.message = action.payload.message
+  })
+  .addCase(LeaveData.rejected,(state,action)=>{
     state.error = action.payload.error
   })
  }
