@@ -24,7 +24,7 @@ export function Leaves() {
   const [dialogMode, setDialogMode] = useState("");
   const [rows, setRows] = useState(10);
   const [page, setPage] = useState(0);
-  const { leave, loading,message } = useSelector((state) => state.leave);
+  const { leave, loading, message } = useSelector((state) => state.leave);
   const dispatch = useDispatch();
   const actionTemplate = (rowData) => (
     <div className="flex gap-x-3">
@@ -82,7 +82,12 @@ export function Leaves() {
     { field: "status", header: "Status" },
     { header: "Actions", body: actionTemplate },
   ];
-
+  //------------view column------------\
+  const viewColumn = [
+    { body: nameTemplate, header: "Name" },
+    { field: "leave_type", header: "Leave Type" },
+    { field: "status", header: "Status" },
+  ];
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -146,8 +151,8 @@ export function Leaves() {
                 initialValues={leaveInitialValues}
                 validationSchema={leaveValidationSchema}
                 onSubmit={(payload) => {
-                  dispatch(LeaveData(payload))
-                  showSuccess(message||"Leave Successfully");
+                  dispatch(LeaveData(payload));
+                  showSuccess(message || "Leave Successfully");
                   setVisible(false);
                   dispatch(FetchLeaveData({ page: page + 1, per_page: rows }));
                 }}
@@ -188,10 +193,11 @@ export function Leaves() {
                       placeholder="Select status"
                     />
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end gap-x-3">
                     <div>
                       <ShareButton
                         label="Cancel"
+                        type="button"
                         onClick={() => setVisible(false)}
                       />
                     </div>
@@ -203,9 +209,34 @@ export function Leaves() {
               </Formik>
             </div>
           )}
-          {dialogMode === "view" && <div></div>}
+          {dialogMode === "view" && (
+            <div>
+              <CoustomTable
+                value={[selectedRow]}
+                columns={viewColumn}
+                loading={loading}
+              />
+            </div>
+          )}
           {dialogMode === "edit" && <div></div>}
-          {dialogMode === "delete" && <div></div>}
+          {dialogMode === "delete" && (
+            <div>
+              <p className="font-bold">
+                Are You Sure You Want To Delete......{" "}
+              </p>
+              <div className="flex justify-end gap-x-3">
+                <div>
+                  <ShareButton
+                    label="Cancel"
+                    onClick={() => setVisible(false)}
+                  />
+                </div>
+                <div>
+                  <ShareButton label="Delete" />
+                </div>
+              </div>
+            </div>
+          )}
         </ShareDialog>
       </div>
     </React.Fragment>

@@ -15,7 +15,7 @@ export function SearchInput({value,onChange,placeholder}) {
                 pt={{
                     root: {
                 className:
-                  "!py-1  !pl-1 focus:!outline-none hover:!border-[#fab768]",
+                  "!py-1  !pl-1 !outline-none !shadow-none focus:!outline-none focus:!shadow-none hover:!border-[#fab768]",
               },
                 }}
                 />

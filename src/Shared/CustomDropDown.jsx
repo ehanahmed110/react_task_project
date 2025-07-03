@@ -41,7 +41,7 @@ dataKey,
             {...resetProps}
             {...field}
             pt={{
-                root:{className:"!rounded-[4px]"},
+                root:{className:"!rounded-[4px] !outline-none !shadow-none focus:!outline-none focus:!shadow-none hover:!border-[#fab768]"},
                 input:{className:"!py-[6px] !px-2 !text-sm"},
                 trigger:{className:"!py-1"}
             }}

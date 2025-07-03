@@ -2,6 +2,16 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/Axios";
 
 
+
+export const AttendenceData = createAsyncThunk('AttendenceCreate/data',async(payload,thunkAPI)=>{
+  try{
+    const response = await axiosInstance.post('/attendances',payload)
+    return response.data
+  }catch(error){
+    return thunkAPI.rejectWithValue(error.response?.data?.error || "unknown error")
+  }
+});
+
 export const FetchAttendenceData = createAsyncThunk('Attendence/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/attendances/list',payload)
@@ -13,7 +23,8 @@ export const FetchAttendenceData = createAsyncThunk('Attendence/data',async(payl
 const initialState = {
   attendence:{},
   loading:false,
-  error:null
+  error:null,
+  message:null,
 }
 const AttendenceSlice = createSlice({
  name:"attandence",
@@ -26,9 +37,22 @@ const AttendenceSlice = createSlice({
   })
   .addCase(FetchAttendenceData.fulfilled,(state,action)=>{
     state.loading = false,
-    state.attendence = action.payload
+    state.attendence = action.payload,
+    state.message = action.payload.message
   })
   .addCase(FetchAttendenceData.rejected,(state,action)=>{
+    state.error = action.payload.error
+  })
+  .addCase(AttendenceData.pending,(state)=>{
+    state.loading = true
+  })
+  .addCase(AttendenceData.fulfilled,(state,action)=>{
+    state.loading = false,
+    state.attendence = action.payload,
+    state.message = action.payload.message
+  })
+  .addCase(AttendenceData.rejected,(state,action)=>{
+    state.loading = false,
     state.error = action.payload.error
   })
  }

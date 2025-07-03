@@ -17,7 +17,7 @@ export function SimpleInput({label,icon,className='',type,placeholder,...props})
                 className={`w-[150px] ${className}`}
                 type={type}
                 pt={{
-                    root:{className:"!py-[4px] !px-1 text-sm"}
+                    root:{className:"!py-[4px] !px-1 text-sm !outline-none !shadow-none focus:!outline-none focus:!shadow-none hover:!border-[#fab768]"}
                 }}
                 />
             </div>
