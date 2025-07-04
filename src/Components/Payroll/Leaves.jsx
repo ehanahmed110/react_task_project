@@ -6,17 +6,17 @@ import { CoustomTable } from "../../Shared/CoustomTable";
 import { Actionutton } from "../../Shared/Actionutton";
 import { FetchLeaveData, LeaveData } from "../../Features/Payroll/LeaveSlice";
 import { ShareDialog } from "../../Shared/ShareDialog";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { CustomDropDown } from "../../Shared/CustomDropDown";
 import { ShareInput } from "../../Shared/ShareInput";
 import {
-  employeeName,
   leaveInitialValues,
   leaveValidationSchema,
   statusData,
   typeData,
 } from "../../Constant/PayrolLeaveData";
-import { showSuccess } from "../../Shared/toast";
+import { showError, showSuccess } from "../../Shared/toast";
+import { getEmployee } from "../../Features/Payroll/GetEmployeeSlice";
 
 export function Leaves() {
   const [visible, setVisible] = useState("");
@@ -25,7 +25,13 @@ export function Leaves() {
   const [rows, setRows] = useState(10);
   const [page, setPage] = useState(0);
   const { leave, loading, message } = useSelector((state) => state.leave);
+  const { employee } = useSelector((state) => state.getEmployee);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getEmployee());
+  }, []);
+
   const actionTemplate = (rowData) => (
     <div className="flex gap-x-3">
       <Actionutton
@@ -57,7 +63,7 @@ export function Leaves() {
   useEffect(() => {
     dispatch(FetchLeaveData({ page: page + 1, per_page: rows }));
   }, [dispatch, page, rows]);
-  const data = leave?.data || [];
+  const data = Array.isArray(leave?.data) ? leave?.data : [];
   const totalRecords = leave?.total_record || 0;
   const nameTemplate = (rowData) => (
     <div className="flex space-x-1 ">
@@ -87,7 +93,16 @@ export function Leaves() {
     { body: nameTemplate, header: "Name" },
     { field: "leave_type", header: "Leave Type" },
     { field: "status", header: "Status" },
+    { field: "created_at", header: "Create" },
+    { field: "updated_at", header: "Update" },
   ];
+  // -------------dropdown-------------------
+  const nameOptions = Array.isArray(employee?.data)
+    ? employee.data.map((nam) => ({
+        label: `${nam.first_name} ${nam.last_name}`,
+        value: nam.id,
+      }))
+    : [];
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -150,11 +165,29 @@ export function Leaves() {
               <Formik
                 initialValues={leaveInitialValues}
                 validationSchema={leaveValidationSchema}
-                onSubmit={(payload) => {
-                  dispatch(LeaveData(payload));
-                  showSuccess(message || "Leave Successfully");
-                  setVisible(false);
-                  dispatch(FetchLeaveData({ page: page + 1, per_page: rows }));
+                onSubmit={(values) => {
+                  const payload = {
+                    employee_id: values.name,
+                    end_date: values.end_date,
+                    start_date: values.start_date,
+                    leave_type: values.type,
+                    status: values.status,
+                    branch_id: 2,
+                    business_id: 38,
+                  };
+                  dispatch(LeaveData(payload))
+                    .unwrap()
+                    .then((res) => {
+                      showSuccess(res.message || "Leave Successfully");
+                      setVisible(false);
+                      dispatch(
+                        FetchLeaveData({ page: page + 1, per_page: rows })
+                      );
+                    })
+                    .catch((err) => {
+                      console.error("Create Error:", err);
+                      showError(err.message);
+                    });
                 }}
               >
                 <Form className="flex flex-col gap-2">
@@ -163,8 +196,8 @@ export function Leaves() {
                       name="name"
                       label="Employee Name"
                       component={CustomDropDown}
-                      options={employeeName}
-                      optionLabel="name"
+                      options={nameOptions}
+                      optionLabel="label"
                       placeholder="Select Employee"
                       filter={true}
                     />

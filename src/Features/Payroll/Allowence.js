@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/Axios";
-
+//---FOR get employee------------------------
 export const AllowanceEmployeeData = createAsyncThunk('AllowanceEmploy/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/getEmployees',payload)
@@ -9,6 +9,7 @@ export const AllowanceEmployeeData = createAsyncThunk('AllowanceEmploy/data',asy
     return thunkAPI.rejectWithValue(error.response?.data?.error || "unknown error")
   }
 });
+// -----------for create Allowance0-----------------------
 export const CreateAllowanceData = createAsyncThunk('AllowanceCreate/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/allowances',payload)
@@ -17,6 +18,7 @@ export const CreateAllowanceData = createAsyncThunk('AllowanceCreate/data',async
     return thunkAPI.rejectWithValue(error.response?.data?.error || "unknown error")
   }
 });
+//--------------for fetch  allowance--------------
 export const FetchAllowanceData = createAsyncThunk('Allowance/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/allowances/list',payload)
@@ -38,6 +40,7 @@ const allowanceSlice = createSlice({
  reducers:{},
  extraReducers:(builder)=>{
   builder
+//--------------for fetch  allowance--------------
   .addCase(FetchAllowanceData.pending,(state)=>{
     state.loading=true
   })
@@ -48,6 +51,7 @@ const allowanceSlice = createSlice({
   .addCase(FetchAllowanceData.rejected,(state,action)=>{
     state.error = action.payload.error
   })
+  //---FOR get employee------------------------
     .addCase(AllowanceEmployeeData.pending,(state)=>{
     state.loading=true
   })
@@ -58,13 +62,18 @@ const allowanceSlice = createSlice({
   .addCase(AllowanceEmployeeData.rejected,(state,action)=>{
     state.error = action.payload.error
   })
+  // -----------for create Allowance0-----------------------
       .addCase(CreateAllowanceData.pending,(state)=>{
     state.loading=true
   })
   .addCase(CreateAllowanceData.fulfilled,(state,action)=>{
-    state.loading = false,
+    state.loading = false;
     state.allowance = action.payload,
-    state.message = action.payload.message
+    state.message = action.payload.message;
+    // if(Array.isArray(state.allowance.data)) {
+    // state.allowance.data = [action.payload.data, ...state.allowance.data];
+    // state.allowance.total_record += 1;
+  // }
   })
   .addCase(CreateAllowanceData.rejected,(state,action)=>{
     state.error = action.payload.error

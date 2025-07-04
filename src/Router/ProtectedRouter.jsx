@@ -21,6 +21,7 @@ import { PurchasesEntryPage } from "../Pages/Purchases/PurchasesEntryPage";
 import { PaymentVoucherPage } from "../Pages/Voucher/PaymentVoucherPage";
 import { ReceptVoucherPage } from "../Pages/Voucher/ReceptVoucherPage";
 import { Layout } from "../Layouts/Layout";
+import { CreateEmployeeComponent } from "../Components/Payroll/CreateEmployeeComponent";
 
 export function ProtectedRouter() {
   return (
@@ -34,6 +35,7 @@ export function ProtectedRouter() {
         <Route path="/chart-account" element={<ChartsOfAccountsPage/>}/>
         <Route path="/journal-entries" element={<JournalEntriesPage/>} />
         <Route path="/payroll" element={<PayrollPage/>}/>
+        <Route path="/createemployee" element={<CreateEmployeeComponent/>}/>
         <Route path="/report" element={<ReportsPage/>}/>
 
         <Route path="/invoice/sales-invoice" element={<SalesInvoicePage/>}/>

@@ -65,7 +65,7 @@ export function Allowence() {
   useEffect(() => {
     dispatch(FetchAllowanceData({ page: page + 1, per_page: rows }));
   }, [dispatch, page, rows]);
-  //const data = allowance?.data || [];
+
   const data = Array.isArray(allowance?.data) ? allowance.data : [];
   const totalRecords = allowance?.total_record || 0;
   const nameTemplate = (rowData) => (
@@ -86,7 +86,7 @@ export function Allowence() {
     },
     { field: "effective_date", header: "Effective Date" },
     { header: "Name", body: nameTemplate },
-    { field: "allowance_type", header: "Deduction Type" },
+    { field: "allowance_type", header: "Allowance Type" },
     { field: "amount", header: "Amount" },
     { header: "Actions", body: actionTemplate },
   ];
@@ -97,6 +97,12 @@ export function Allowence() {
         value: nam.id,
       }))
     : [];
+  //--------dialog column-------------------
+  const dialogColumn = [
+    { header: "Name", body: nameTemplate },
+    {field:"created_at",header:"Created At"},
+    {field:"updated_at",header:"Updated At"}
+  ];
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -163,15 +169,13 @@ export function Allowence() {
                     allowance_type: values.type,
                     amount: Number(values.amount),
                     branch_id: 2,
-                    buisness_id: 38,
+                    business_id: 38,
                     effective_date: values.date,
                   };
                   dispatch(CreateAllowanceData(payload))
                     .unwrap()
                     .then((res) => {
-                      showSuccess(
-                        res.message || "Allowance Created"
-                      );
+                      showSuccess(res.message || "Allowance Created");
                       setVisible(false);
                       dispatch(
                         FetchAllowanceData({ page: page + 1, per_page: rows })
@@ -179,12 +183,8 @@ export function Allowence() {
                     })
                     .catch((err) => {
                       console.error("Create Error:", err);
-                      showError(message)
+                      showError(err.message);
                     });
-                  //    dispatch(CreateAllowanceData(payload));
-                  //    showSuccess(message || "Attendence Add");
-                  //    setVisible(false);
-                  //  dispatch(FetchAllowanceData({ page: page + 1, per_page: rows }));
                 }}
               >
                 <Form>

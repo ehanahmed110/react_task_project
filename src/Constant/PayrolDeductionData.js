@@ -1,9 +1,5 @@
  import * as Yup from 'yup';
-export const employeeName = [
-  { label: "Amina Shehbaz", value: "Amina Shehbaz" },
-  { label: "Ahmed Ali", value: "Ahmed Ali" },
-  { label: "Sara Khan", value: "Sara Khan" }
-];
+
 export const type = [
     {label:"Tax",value:"Tax"},
     {label:"Absent",value:"Absent"},
@@ -14,7 +10,7 @@ export const DeductionInitialValues = {
   name: '',
   type: '',
   date: '',
-  amount: '',
+  amount: 0,
   description:""
 };
 export const DeductionValidationSchema = Yup.object({

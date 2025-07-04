@@ -7,7 +7,6 @@ import { Actionutton } from "../../Shared/Actionutton";
 import {
   DeductionData,
   FetchDeductionData,
-  getEmployeeData,
 } from "../../Features/Payroll/DeductionSlice";
 import { ShareInput } from "../../Shared/ShareInput";
 import { Field, Form, Formik } from "formik";
@@ -16,10 +15,10 @@ import { CustomDropDown } from "../../Shared/CustomDropDown";
 import {
   DeductionInitialValues,
   DeductionValidationSchema,
-  employeeName,
   type,
 } from "../../Constant/PayrolDeductionData";
 import { showError, showSuccess } from "../../Shared/toast";
+import { getEmployee } from "../../Features/Payroll/GetEmployeeSlice";
 
 export function Deductions() {
   const [visible, setVisible] = useState("");
@@ -27,12 +26,13 @@ export function Deductions() {
   const [dialogMode, setDialogMode] = useState("");
   const [rows, setRows] = useState(10);
   const [page, setPage] = useState(0);
-  const { deduction, loading, message, employee } = useSelector(
+  const { deduction, loading, message } = useSelector(
     (state) => state.deduction
   );
+  const { employee } = useSelector((state) => state.getEmployee);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getEmployeeData({}));
+    dispatch(getEmployee());
   }, []);
 
   const actionTemplate = (rowData) => (
@@ -96,42 +96,18 @@ export function Deductions() {
   const dialogColumn = [
     { header: "Name", body: nameTemplate },
     { field: "deduction_type", header: "Deduction Type" },
-    { field: "amount", header: "Amount" },
     { field: "description", header: "Discription" },
+    {field:"created_at",header:"Create"},
+    {field:"updated_at",header:"Update"}
   ];
   //--------------for employess dropdown field----------------
-  const employeeNameOptions =
-    employee?.data.map((employ) => ({
-      label: `${employ.first_name} ${employ.last_name}`,
-      value: employ.id,
-    })) || [];
-  //---------------------
-  const HandleSubmit = (value, actions) => {
-    const payload = {
-      employee_id: value.name,
-      deduction_type: value.typa,
-      effective_date: value.date,
-      amount: value.amount,
-      description: value.description,
-      branch_id: null,
-      buisness_id: null,
-    };
-    // try{
-    //  const res = await dispatch(DeductionData(payload))
-    //  if(res?.payload){
-    //     showSuccess(message || "Deduction Add");
-    //     setVisible(false);
-    //      await dispatch(dispatch(FetchDeductionData({ page: page + 1, per_page: rows })));
-    //  }
-    // }catch(error){
-    //    showError(message);
-    //    console.error(error)
-    // }
-    dispatch(DeductionData(payload));
-    showSuccess(message || "Deduction Add");
-    setVisible(false);
-    dispatch(dispatch(FetchDeductionData({ page: page + 1, per_page: rows })));
-  };
+  const employeeNameOptions = Array.isArray(employee?.data)
+    ? employee.data.map((employ) => ({
+        label: `${employ.first_name} ${employ.last_name}`,
+        value: employ.id,
+      }))
+    : [];
+
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -196,21 +172,26 @@ export function Deductions() {
                 onSubmit={(value) => {
                   const payload = {
                     employee_id: value.name,
-                    deduction_type: value.typa,
+                    deduction_type: value.type,
                     effective_date: value.date,
                     amount: value.amount,
                     description: value.description,
                     branch_id: 2,
-                    buisness_38: null,
+                    business_id:38,
                   };
-                  dispatch(DeductionData(payload));
-                  showSuccess(message || "Deduction Add");
-                  setVisible(false);
-                  dispatch(
-                    dispatch(
-                      FetchDeductionData({ page: page + 1, per_page: rows })
-                    )
-                  );
+                  dispatch(DeductionData(payload))
+                    .unwrap()
+                    .then((res) => {
+                      showSuccess(message || "Deduction Add");
+                      setVisible(false);
+                      dispatch(
+                        FetchDeductionData({ page: page + 1, per_page: rows })
+                      );
+                    })
+                    .catch((err) => {
+                      console.error("Create Error:", err);
+                      showError(err.message);
+                    });
                 }}
               >
                 <Form>

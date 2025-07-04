@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/Axios";
-
+// --------------Create Leave--------------------
 export const LeaveData = createAsyncThunk('leave/approval',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/leaves',payload)
@@ -9,6 +9,7 @@ export const LeaveData = createAsyncThunk('leave/approval',async(payload,thunkAP
     return thunkAPI.rejectWithValue(error.response?.data?.error || "unknown error")
   }
 })
+// --------------get Leave- data-------------------
 export const FetchLeaveData = createAsyncThunk('Leave/data',async(payload,thunkAPI)=>{
   try{
     const response = await axiosInstance.post('/leaves/list',payload)

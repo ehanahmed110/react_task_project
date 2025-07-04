@@ -33,7 +33,11 @@ export function ShareDialog({
             header:{className:"!bg-black !text-white !px-2 !py-1"},
             headerTitle:{className:"!text-[14px]"},
             closeButtonIcon:{className:"!text-white"},
-            closeButton:{className:"!border !border-black hover:!bg-transparent"}
+            closeButton:{className:"!border !border-black hover:!bg-transparent"},
+            content: {
+              className: "!overflow-y-auto !max-h-[70vh] !px-3",
+            },
+            root:{className:"!overflow-auto "}
           }}
         >
           {children}

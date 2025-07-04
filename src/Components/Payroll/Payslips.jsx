@@ -5,17 +5,42 @@ import { ShareButton } from "../../Shared/ShareButton";
 import { CoustomTable } from "../../Shared/CoustomTable";
 import { Actionutton } from "../../Shared/Actionutton";
 import { FetchPayslipData } from "../../Features/Payroll/PayslipsSlice";
+import { ShareDialog } from "../../Shared/ShareDialog";
 
 export function Payslips() {
+  const [visible, setVisible] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [dialogMode, setDialogMode] = useState("");
   const [rows, setRows] = useState(10);
   const [page, setPage] = useState(0);
   const { payslip, loading } = useSelector((state) => state.payslip);
   const dispatch = useDispatch();
   const actionTemplate = (rowData) => (
     <div className="flex gap-x-3">
-      <Actionutton icon="pi pi-eye" />
-      <Actionutton icon="pi pi-pencil" />
-      <Actionutton icon="pi pi-trash" />
+      <Actionutton
+        icon="pi pi-eye"
+        onClick={() => {
+          setVisible(true);
+          setSelectedRow(rowData);
+          setDialogMode("view");
+        }}
+      />
+      <Actionutton
+        icon="pi pi-pencil"
+        onClick={() => {
+          setVisible(true);
+          setSelectedRow(rowData);
+          setDialogMode("view");
+        }}
+      />
+      <Actionutton
+        icon="pi pi-trash"
+        onClick={() => {
+          setVisible(true);
+          setSelectedRow(rowData);
+          setDialogMode("view");
+        }}
+      />
     </div>
   );
   useEffect(() => {
@@ -49,7 +74,13 @@ export function Payslips() {
     { field: "gosi_contribution", header: "GOSI Contribution" },
     { header: "Actions", body: actionTemplate },
   ];
-
+// -------for dialog columm---------------
+ const dialogColumn = [
+  { header: "Name", body: nameTemplate },
+   { field: "pay_period", header: "Pay Period" },
+  {field:"created_at",header:"Create"},
+  {field:"updated_at",header:"Update"}
+ ]
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -79,6 +110,33 @@ export function Payslips() {
         <div className="mb-2 text-sm font-semibold text-gray-600">
           Total Records: {totalRecords}
         </div>
+      </div>
+      <div>
+        <ShareDialog
+          visible={visible}
+          onHide={() => setVisible(false)}
+          title={
+            dialogMode === "create"
+              ? "Create Leave"
+              : dialogMode === "view"
+              ? "Leave Detail"
+              : dialogMode === "edit"
+              ? "Update Leave"
+              : "Delete Leave"
+          }
+          showFooter={false}
+          width={dialogMode === "create" ? "70vw" : "50vw"}
+        >
+          {dialogMode === "view" && (
+            <div>
+              <CoustomTable 
+              value={[selectedRow]}
+              columns={dialogColumn}
+              loading={loading}
+              />
+            </div>
+          )}
+        </ShareDialog>
       </div>
     </React.Fragment>
   );

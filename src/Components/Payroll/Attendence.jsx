@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AttendenceData,
   FetchAttendenceData,
+  getAttendenceEmployee,
 } from "../../Features/Payroll/AttendenceSlice";
 import { CoustomHeading } from "../../Shared/CoustomHeading";
 import { ShareButton } from "../../Shared/ShareButton";
@@ -18,8 +19,8 @@ import {
   monthData,
   yearData,
 } from "../../Constant/PayrolAttendenceData";
-import { employeeName } from "../../Constant/PayrolLeaveData";
-import { showSuccess } from "../../Shared/toast";
+
+import { showError, showSuccess } from "../../Shared/toast";
 
 export function Attendence() {
   const [visible, setVisible] = useState("");
@@ -27,10 +28,15 @@ export function Attendence() {
   const [dialogMode, setDialogMode] = useState("");
   const [rows, setRows] = useState(10);
   const [page, setPage] = useState(0);
-  const { attendence, loading, message } = useSelector(
+  const { attendence, loading, message, employee } = useSelector(
     (state) => state.attendence
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAttendenceEmployee());
+  }, []);
+
   const actionTemplate = (rowData) => (
     <div className="flex gap-x-3">
       <Actionutton
@@ -62,7 +68,8 @@ export function Attendence() {
   useEffect(() => {
     dispatch(FetchAttendenceData({ page: page + 1, per_page: rows }));
   }, [dispatch, page, rows]);
-  const data = attendence?.data || [];
+
+  const data = Array.isArray(attendence?.data) ? attendence?.data : []
   const totalRecords = attendence?.total_record || 0;
   const nameTemplate = (rowData) => (
     <div className="flex space-x-1 ">
@@ -92,7 +99,15 @@ export function Attendence() {
     { field: "days", header: "Days" },
     { field: "month", header: "Month" },
     { field: "year", header: "Years" },
+    {field:"created_at",header :"Create"},
+    {field:"updated_at",header:"Update"}
   ];
+  const nameOptions = Array.isArray(employee?.data)
+    ? employee.data.map((nam) => ({
+        label: `${nam.first_name} ${nam.last_name}`,
+        value: nam.id,
+      }))
+    : [];
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -154,13 +169,26 @@ export function Attendence() {
               <Formik
                 initialValues={AttendenceInitialValues}
                 validationSchema={AttendenceValidationSchema}
-                onSubmit={(payload) => {
-                  dispatch(AttendenceData(payload));
-                  showSuccess(message || "Attendence Add");
-                  setVisible(false);
-                  dispatch(
-                    FetchAttendenceData({ page: page + 1, per_page: rows })
-                  );
+                onSubmit={(value) => {
+                  const payload = {
+                    days: value.day,
+                    month: value.month,
+                    year: value.year,
+                    employee_id: value.name,
+                  };
+                  dispatch(AttendenceData(payload))
+                    .unwrap()
+                    .then((res) => {
+                      showSuccess(res.message || "Attendence Add");
+                      setVisible(false);
+                      dispatch(
+                        FetchAttendenceData({ page: page + 1, per_page: rows })
+                      );
+                    })
+                    .catch((err) => {
+                      console.error("Create Error:", err);
+                      showError(err.message);
+                    });
                 }}
               >
                 <Form>
@@ -171,7 +199,7 @@ export function Attendence() {
                       label="Employee Name"
                       placeholder="Select Employee"
                       filter={true}
-                      options={employeeName}
+                      options={nameOptions}
                       optionLabel="label"
                     />
                     <Field

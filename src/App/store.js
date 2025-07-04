@@ -13,6 +13,7 @@ import cashFlowReducer from "../Features/Reports/CashFlow"
 import incomeReducer from "../Features/Reports/IncomeStatement"
 import trialBalancereducer from "../Features/Reports/TrailBalance"
 import accountStatementReducer from "../Features/Reports/AccountStatement"
+import getEmployeeReducer from "../Features/Payroll/EmployeeSlice"
 import vatReportReducer from "../Features/Reports/VatReport"
 import DashboardRedeucer from "../Features/DashboardSlice"
 import storage from "redux-persist/lib/storage";
@@ -38,9 +39,10 @@ const rootReducer =combineReducers({
    income : incomeReducer,
    trialBalance:trialBalancereducer,
    accountStatement:accountStatementReducer,
-   vatReport:vatReportReducer
+   vatReport:vatReportReducer,
+   getEmployee : getEmployeeReducer
 })
-const persistConfig ={
+const persistConfig = {
     key :'root',
      storage,
      whitelist:['auth']
