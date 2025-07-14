@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../utils/Axios";
+// ---------delelet Journal Entre----------------
 export const DeleteJournalEntry = createAsyncThunk('journal/deleteEntry',async(id,thunkAPI)=>{
   try{
      const response = await axiosInstance.post('/deleteEntry',{transection_id:id})
