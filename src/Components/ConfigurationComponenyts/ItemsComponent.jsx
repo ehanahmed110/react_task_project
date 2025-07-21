@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CoustomHeading } from "../../Shared/CoustomHeading";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  CreateItemData,
   DeleteItemDate,
   FetchItemsData,
   SearchItemsData,
@@ -15,6 +16,12 @@ import { Actionutton } from "../../Shared/Actionutton";
 import { ShareDialog } from "../../Shared/ShareDialog";
 import { showError, showSuccess } from "../../Shared/toast";
 import { ShareInput } from "../../Shared/ShareInput";
+import { CustomDropDown } from "../../Shared/CustomDropDown";
+import { GetCompaniesData } from "../../Features/Configuration/GetCompanySlice";
+import {
+  ItemForminitialValues,
+  ItemFormvalidationSchema,
+} from "../../Features/Configuration/ItemFormdata";
 
 export function ItemsComponent() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,14 +30,14 @@ export function ItemsComponent() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogMode, setDialogMode] = useState("");
   const [visible, setVisible] = useState(false);
-  const { items, loading, error } = useSelector((state) => state.items);
+  const { items, loading, } = useSelector((state) => state.items);
+  const { getCompany } = useSelector((state) => state.getCompany);
   const dispatch = useDispatch();
 
   //   ---------for get item list--------------
   useEffect(() => {
     dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
   }, [dispatch, page, rows]);
-
   //   ---------for search item list--------------
   useEffect(() => {
     if (searchTerm) {
@@ -103,6 +110,43 @@ export function ItemsComponent() {
         showError(err.error || "Delete failed");
       });
   };
+  // ----------------DropDownData---------------------
+  const payerName =
+    getCompany?.data?.map((company) => ({
+      label: company.name_en,
+      value: company.id,
+      branch_id: company.branch_id,
+      business_id: company.business_id,
+    })) || [];
+
+  const ItemType = [
+    { label: "Services", value: "Services" },
+    { label: "Goods", value: "Goods" },
+  ];
+  // -------------Create Item-------------------
+  const handleSubmit = (values) => {
+    const Payload = {
+      ...values,
+      price: Number(values.price),
+      factor: Number(values.factor),
+      tax: Number(values.tax),
+      discount: Number(values.discount),
+      payer_id: Number(values.payer_id),
+      branch_id: Number(values.branch_id),
+      business_id: Number(values.business_id),
+    };
+    dispatch(CreateItemData(Payload))
+      .unwrap()
+      .then((res) => {
+        showSuccess(res.message || "Allowance Created");
+        setVisible(false);
+        dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
+      })
+      .catch((err) => {
+        console.error("Create Error:", err);
+        showError(err.message);
+      });
+  };
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -126,6 +170,7 @@ export function ItemsComponent() {
               icon="pi pi-plus"
               label="Create Items"
               onClick={() => {
+                dispatch(GetCompaniesData());
                 setVisible(true);
                 setDialogMode("create");
               }}
@@ -166,7 +211,7 @@ export function ItemsComponent() {
               : "Delete Items"
           }
           showFooter={false}
-          width={dialogMode === "delete" ? "50vw" : "70vw"}
+          width={dialogMode === "delete" ? "50vw" : "80vw"}
         >
           {dialogMode === "delete" && (
             <div>
@@ -189,36 +234,127 @@ export function ItemsComponent() {
           )}
           {dialogMode === "create" && (
             <div>
-              <Formik>
-                <Form>
-                  <div>
-                    <ShareInput label='Name' placeholder='Enter Name' name='name_en'/>
-                    <ShareInput label='Name(Arabic)' placeholder='Enter Name(Aabic)' name='name_ar'/>
-                    <ShareInput label='Item Code' placeholder='Enter Item Code' name='item_code'/>
-                    <Field 
-                    name
-                    />
-                  </div>
-
-
-
-
-                  <div className="mt-4 flex justify-end gap-3">
-                    <div>
-                      <ShareButton
-                        label="Cancel"
-                        type='button'
-                        onClick={() => setVisible(false)}
+              <Formik
+                initialValues={ItemForminitialValues}
+                validationSchema={ItemFormvalidationSchema}
+                onSubmit={handleSubmit}
+              >
+                {(props) => (
+                  <Form>
+                    <div className="grid md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
+                      <ShareInput
+                        label="Name"
+                        placeholder="Enter Name"
+                        name="name_en"
                       />
+                      <ShareInput
+                        label="Name(Arabic)"
+                        placeholder="Enter Name(Aabic)"
+                        name="name_ar"
+                      />
+                      <ShareInput
+                        label="Item Code"
+                        placeholder="Enter Item Code"
+                        name="item_code"
+                      />
+                      <Field
+                        name="payer_id"
+                        placeholder="Payer"
+                        label="payer"
+                        component={CustomDropDown}
+                        optionLabel="label"
+                        options={payerName}
+                        onChange={(e, form) => {
+                          console.log("Dropdown value:", e.value);
+                          const selected = payerName.find(
+                            (p) => p.value === e.value
+                          );
+                          console.log("Matched Payer:", selected);
+                          form.setFieldValue("payer_id", e.value);
+                          form.setFieldValue(
+                            "branch_id",
+                            selected?.branch_id || ""
+                          );
+                          form.setFieldValue(
+                            "business_id",
+                            selected?.business_id || ""
+                          );
+                        }}
+                      />
+                      <Field
+                        name="item_type"
+                        placeholder="Select Item Type"
+                        label="Item Type"
+                        component={CustomDropDown}
+                        optionLabel="label"
+                        options={ItemType}
+                      />
+                      <ShareInput
+                        label="Effective Date"
+                        type="date"
+                        name="effective_date"
+                      />
+                      <ShareInput
+                        label="Unit Price"
+                        placeholder="Enter Price"
+                        name="price"
+                      />
+                      <ShareInput
+                        label="Factor"
+                        placeholder="Enter Factor"
+                        name="factor"
+                      />
+                      <ShareInput
+                        label="Tax"
+                        placeholder="Enter Tax"
+                        name="tax"
+                      />
+                      <ShareInput
+                        label="Discount"
+                        placeholder="Enter Discount"
+                        name="discount"
+                      />
+                      <ShareInput
+                        label="Non Standered Code"
+                        placeholder="Enter Non Standered Code"
+                        name="non_standard_code"
+                      />
+                      <ShareInput
+                        label="Non standered Description"
+                        placeholder="Enter Non Standered Discription"
+                        name="non_standard_description"
+                      />
+                      <Field type="hidden" name="branch_id" />
+                      <Field type="hidden" name="business_id" />
                     </div>
-                    <div>
-                      <ShareButton label="Delete" type='submit' />
+
+                    <div className="mt-4 flex justify-end gap-3">
+                      <div>
+                        <ShareButton
+                          label="Cancel"
+                          type="button"
+                          onClick={() => setVisible(false)}
+                        />
+                      </div>
+                      <div>
+                        <ShareButton label="Submit" type="submit" />
+                      </div>
                     </div>
-                  </div>
-                </Form>
+                  </Form>
+                )}
               </Formik>
             </div>
           )}
+          {
+            dialogMode === "edit" && (
+              <div>
+                <Formik>
+                  <Form>
+
+                  </Form>
+                </Formik>
+              </div>
+            )}
         </ShareDialog>
       </div>
     </React.Fragment>

@@ -17,6 +17,7 @@ import getEmployeeReducer from "../Features/Payroll/EmployeeSlice"
 import vatReportReducer from "../Features/Reports/VatReport"
 import DashboardRedeucer from "../Features/DashboardSlice"
 import ItemsReducer from "../Features/Configuration/ItemsSlice"
+import getCompanyReducer from "../Features/Configuration/GetCompanySlice"
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -42,7 +43,8 @@ const rootReducer =combineReducers({
    accountStatement:accountStatementReducer,
    vatReport:vatReportReducer,
    getEmployee : getEmployeeReducer,
-   items:ItemsReducer
+   items:ItemsReducer,
+   getCompany:getCompanyReducer
 })
 const persistConfig = {
     key :'root',

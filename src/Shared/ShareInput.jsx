@@ -22,7 +22,7 @@ export function ShareInput({ icon, label, className, placeholder, ...props }) {
             meta.touched && meta.error ? "border-red-500" : "border-gray-300"
           } w-full border focus:outline-none focus:ring-2 px-3 py-2`}
           pt={{
-            root: { className: "!px-2 !py-1 !w-full !rounded-[4px] !outline-none !ring-none focus:!ring-none !shadow-none focus:!outline-none focus:!shadow-none hover:!border-[#fab768]" },
+            root: { className: "!px-2 !py-1 !w-full !rounded-[4px] focus:!border-[#fab768] !outline-none !ring-0 focus:!ring-0 !shadow-none focus:!outline-none focus:!shadow-none hover:!border-[#fab768]" },
           }}
         />
         {meta.touched && meta.error && (

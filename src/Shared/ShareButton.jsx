@@ -4,7 +4,7 @@ import React from 'react'
 export function ShareButton({type,label, icon,onClick, variant = 'default',disabled,className='',...props}) {
     
  const baseStyles = {
-    default: "!bg-gradient-to-r from-[#f14f3e] to-[#fab768] !py-1 !px-3 w-full !border-transparent hover:!bg-none hover:!text-[#fab768] hover:!border-[#fab768]",
+    default: "!bg-gradient-to-r from-[#f14f3e] to-[#fab768] !py-[6px] !px-3 w-full !border-transparent hover:!bg-none hover:!text-[#fab768] hover:!border-[#fab768]",
     transparent: "!bg-transparent   !px-2 !py-1 !border-[#fab768] !text-[#fab768]"
   };
     return (
