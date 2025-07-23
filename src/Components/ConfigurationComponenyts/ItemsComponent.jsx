@@ -6,6 +6,7 @@ import {
   DeleteItemDate,
   FetchItemsData,
   SearchItemsData,
+  UpdateItemData,
 } from "../../Features/Configuration/ItemsSlice";
 import { SearchInput } from "../../Shared/SearchInput";
 import { ShareButton } from "../../Shared/ShareButton";
@@ -30,7 +31,7 @@ export function ItemsComponent() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogMode, setDialogMode] = useState("");
   const [visible, setVisible] = useState(false);
-  const { items, loading, } = useSelector((state) => state.items);
+  const { items, loading } = useSelector((state) => state.items);
   const { getCompany } = useSelector((state) => state.getCompany);
   const dispatch = useDispatch();
 
@@ -40,8 +41,8 @@ export function ItemsComponent() {
   }, [dispatch, page, rows]);
   //   ---------for search item list--------------
   useEffect(() => {
-    if (searchTerm) {
-      const delayDebounceFn = setTimeout(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm && searchTerm.trim() !== "") {
         dispatch(
           SearchItemsData({
             page: page + 1,
@@ -49,10 +50,11 @@ export function ItemsComponent() {
             search: searchTerm,
           })
         );
-      }, 500);
-      return () => clearTimeout(delayDebounceFn);
-    }
-    dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
+      } else {
+        dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
   const actionTemplate = (rowData) => (
@@ -61,6 +63,7 @@ export function ItemsComponent() {
         icon="pi pi-pencil"
         onClick={() => {
           setVisible(true);
+          dispatch(GetCompaniesData());
           setSelectedRow(rowData);
           setDialogMode("edit");
         }}
@@ -138,7 +141,7 @@ export function ItemsComponent() {
     dispatch(CreateItemData(Payload))
       .unwrap()
       .then((res) => {
-        showSuccess(res.message || "Allowance Created");
+        showSuccess(res.message || "Items Created");
         setVisible(false);
         dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
       })
@@ -147,6 +150,32 @@ export function ItemsComponent() {
         showError(err.message);
       });
   };
+  // =---------------handleUpdate------------------------
+  const handleUpdate = (values) => {
+    const Payload = {
+      ...values,
+      price: Number(values.price),
+      tax: Number(values.tax),
+      factor: Number(values.factor),
+      discount: Number(values.discount),
+      payer_id: Number(values.payer_id),
+      branch_id: Number(values.branch_id),
+      business_id: Number(values.business_id),
+      ID: selectedRow?.ID,
+    };
+    dispatch(UpdateItemData(Payload))
+      .unwrap()
+      .then((res) => {
+        setVisible(false);
+        showSuccess(res.message || "Items Updated");
+        dispatch(FetchItemsData({ page: page + 1, per_page: rows }));
+      })
+      .catch((err) => {
+        console.error("Create Error:", err);
+        showError(err.message);
+      });
+  };
+
   return (
     <React.Fragment>
       <div className="flex justify-between">
@@ -265,7 +294,6 @@ export function ItemsComponent() {
                         optionLabel="label"
                         options={payerName}
                         onChange={(e, form) => {
-                          console.log("Dropdown value:", e.value);
                           const selected = payerName.find(
                             (p) => p.value === e.value
                           );
@@ -345,16 +373,119 @@ export function ItemsComponent() {
               </Formik>
             </div>
           )}
-          {
-            dialogMode === "edit" && (
-              <div>
-                <Formik>
+          {dialogMode === "edit" && (
+            <div>
+              <Formik
+                initialValues={
+                  selectedRow || ItemForminitialValues
+                }
+                validationSchema={ItemFormvalidationSchema}
+                onSubmit={handleUpdate}
+              >
+                {(props) => (
                   <Form>
-
+                    <div className="grid md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
+                      <ShareInput
+                        label="Name"
+                        placeholder="Enter Name"
+                        name="name_en"
+                      />
+                      <ShareInput
+                        label="Name(Arabic)"
+                        placeholder="Enter Name(Aabic)"
+                        name="name_ar"
+                      />
+                      <ShareInput
+                        label="Item Code"
+                        placeholder="Enter Item Code"
+                        name="item_code"
+                      />
+                      <Field
+                        name="payer_id"
+                        placeholder="Payer"
+                        label="payer"
+                        component={CustomDropDown}
+                        optionLabel="label"
+                        options={payerName}
+                        onChange={(e, form) => {
+                          const selected = payerName.find(
+                            (p) => p.value === e.value
+                          );
+                          console.log("Matched Payer:", selected);
+                          form.setFieldValue("payer_id", e.value);
+                          form.setFieldValue(
+                            "branch_id",
+                            selected?.branch_id || ""
+                          );
+                          form.setFieldValue(
+                            "business_id",
+                            selected?.business_id || ""
+                          );
+                        }}
+                      />
+                      <Field
+                        name="item_type"
+                        placeholder="Select Item Type"
+                        label="Item Type"
+                        component={CustomDropDown}
+                        optionLabel="label"
+                        options={ItemType}
+                      />
+                      <ShareInput
+                        label="Effective Date"
+                        type="date"
+                        name="effective_date"
+                      />
+                      <ShareInput
+                        label="Unit Price"
+                        placeholder="Enter Price"
+                        name="price"
+                      />
+                      <ShareInput
+                        label="Factor"
+                        placeholder="Enter Factor"
+                        name="factor"
+                      />
+                      <ShareInput
+                        label="Tax"
+                        placeholder="Enter Tax"
+                        name="tax"
+                      />
+                      <ShareInput
+                        label="Discount"
+                        placeholder="Enter Discount"
+                        name="discount"
+                      />
+                      <ShareInput
+                        label="Non Standered Code"
+                        placeholder="Enter Non Standered Code"
+                        name="non_standard_code"
+                      />
+                      <ShareInput
+                        label="Non standered Description"
+                        placeholder="Enter Non Standered Discription"
+                        name="non_standard_description"
+                      />
+                      <Field type="hidden" name="branch_id" />
+                      <Field type="hidden" name="business_id" />
+                    </div>
+                    <div className="mt-4 flex justify-end gap-3">
+                      <div>
+                        <ShareButton
+                          label="Cancel"
+                          type="button"
+                          onClick={() => setVisible(false)}
+                        />
+                      </div>
+                      <div>
+                        <ShareButton label="Update" type="submit" />
+                      </div>
+                    </div>
                   </Form>
-                </Formik>
-              </div>
-            )}
+                )}
+              </Formik>
+            </div>
+          )}
         </ShareDialog>
       </div>
     </React.Fragment>

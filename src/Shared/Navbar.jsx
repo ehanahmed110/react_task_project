@@ -70,8 +70,8 @@ export function Navbar() {
     return (
         <>
         <div className='bg-black relative w-full '>
-           <div className='bg-black px-8 flex space-x-4 fixed w-full z-50 '>
-              <div className='flex space-x-4 ml-2'>
+           <div className='bg-black px-2 flex space-x-4 fixed w-full z-50 '>
+              <div className='flex space-x-4 ml-2 '>
                 {/* ------for -links */}
                 <div onClick={()=>{navigate('/dashboard')}} className='cursor-pointer flex justify-center items-center'>
                     <img className='w-10 ' src="https://acc2.fe.supergitsa.com/images/supergit-02.png" alt="" />

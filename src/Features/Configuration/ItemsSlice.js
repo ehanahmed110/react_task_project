@@ -20,6 +20,7 @@ export const UpdateItemData = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const response = await axiosInstance.post("/updateItem", payload);
+      return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.error || "Delete failed"
@@ -96,10 +97,10 @@ const ItemsSlice = createSlice({
         state.loading = true;
       })
       .addCase(DeleteItemDate.fulfilled, (state, action) => {
-        (state.loading = false),
-          (state.items.data = state.items.data.filter(
-            (item) => item.id !== action.payload.ID
-          ));
+        (state.loading = false)
+          // (state.items.data = state.items.data.filter(
+          //   (item) => item.id !== action.payload.ID
+          // ));
       })
       .addCase(DeleteItemDate.rejected, (state, action) => {
         (state.loading = false), (state.error = action.payload.error);
@@ -116,29 +117,29 @@ const ItemsSlice = createSlice({
         (state.loading = false), (state.error = action.payload.error);
       })
       // ------------CREATE Item Data----------------------
-      .addCase(CreateItemData.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(CreateItemData.fulfilled, (state, action) => {
-        state.loading = false;
-        (state.items = action.payload),
-          (state.message = action.payload.message);
-      })
-      .addCase(CreateItemData.rejected, (state, action) => {
-        (state.loading = false), (state.error = action.payload.error);
-      })
+      // .addCase(CreateItemData.pending, (state) => {
+      //   state.loading = true;
+      // })
+      // .addCase(CreateItemData.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   (state.items = action.payload),
+      //     (state.message = action.payload.message);
+      // })
+      // .addCase(CreateItemData.rejected, (state, action) => {
+      //   (state.loading = false), (state.error = action.payload.error);
+      // })
       // --------------Edit Item----------------------
-      .addCase(CreateItemData.pending, (state) => {
+      .addCase(UpdateItemData.pending, (state) => {
         state.loading = true;
       })
-      .addCase(CreateItemData.fulfilled, (state, action) => {
+      .addCase(UpdateItemData.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.items.findIndex((item)=>item.id === action.payload.id);
-        if(index !== -1){
-          state.items.data[index] = action.payload
-        }
+        // const index = state.items.data.findIndex((item)=>item.id === action.payload.id);
+        // if(index !== -1){
+        //   state.items.data[index] = action.payload
+        // }
       })
-      .addCase(CreateItemData.rejected, (state, action) => {
+      .addCase(UpdateItemData.rejected, (state, action) => {
         (state.loading = false), (state.error = action.payload.error);
       });
   },
