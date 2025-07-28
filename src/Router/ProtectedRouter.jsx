@@ -22,6 +22,7 @@ import { PaymentVoucherPage } from "../Pages/Voucher/PaymentVoucherPage";
 import { ReceptVoucherPage } from "../Pages/Voucher/ReceptVoucherPage";
 import { Layout } from "../Layouts/Layout";
 import { CreateEmployeeComponent } from "../Components/Payroll/CreateEmployeeComponent";
+import { TPAPage } from "../Pages/Configuration/TPAPage";
 
 export function ProtectedRouter() {
   return (
@@ -49,7 +50,7 @@ export function ProtectedRouter() {
         <Route path="configuration/insurance-company" element={<InsuranceCompanyPage/>}/>
         <Route path="configuration/branch" element={<BranchesPage/>}/>
         <Route path="configuration/cost-center" element={<CostCenterPage/>}/>
-        <Route path="configuration/tpa" element={<ItemsPage/>}/>
+        <Route path="configuration/tpa" element={<TPAPage/>}/>
         
         <Route path="purchases/vendor" element={<VendorPage/>}/>
         <Route path="/purchase/Purchase-entry" element={<PurchasesEntryPage/>}/>

@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
+import { CostCenterComponent } from "../../Components/ConfigurationComponenyts/CostCenterComponent";
 
 export function CostCenterPage() {
-    
+  return (
+    <React.Fragment>
 
-    return (
-        <>
-            <h1>Cost Center Page</h1>
-        </>
-    )
+      <div className="px-4 py-4">
+        <CostCenterComponent />
+      </div>
+    </React.Fragment>
+  );
 }

@@ -70,7 +70,7 @@ export function Navbar() {
     return (
         <>
         <div className='bg-black relative w-full '>
-           <div className='bg-black px-2 flex space-x-4 fixed w-full z-50 '>
+           <div className='bg-black px-2 pr-4 flex space-x-4 fixed w-full z-50 justify-between'>
               <div className='flex space-x-4 ml-2 '>
                 {/* ------for -links */}
                 <div onClick={()=>{navigate('/dashboard')}} className='cursor-pointer flex justify-center items-center'>
@@ -84,7 +84,8 @@ export function Navbar() {
                         icon:{className:"!text-white !text-[11px]"},
                         submenu:{className:"!bg-black"},
                         content:{className:"!-p-[6px] hover:!bg-linear-60 from-[#f14f3e] to-[#fab768]"},
-                        action:{className:"!px-2 !py-2 hover:!bg-linear-60 from-[#f14f3e] to-[#fab768] !rounded-lg"}
+                        action:{className:"!px-2 !py-2 hover:!bg-linear-60 from-[#f14f3e] to-[#fab768] !rounded-lg"},
+                        menu:{className:"!p-2 !w-[250px] !bg-black md:!w-full md:!p-0"}
                     }}
                     />
                 </div>
